@@ -9,8 +9,10 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-// Ensure uploads folder exists
-if (!fs.existsSync('uploads')) fs.mkdirSync('uploads');
+// Ensure uploads folder exists (skip on Heroku if needed)
+try {
+  if (!fs.existsSync('uploads')) fs.mkdirSync('uploads');
+} catch (e) { /* ignore */ }
 
 const upload = multer({ dest: 'uploads/' });
 app.use('/uploads', express.static('uploads'));
@@ -22,6 +24,11 @@ app.use((req, res, next) => {
     return res.send('<h1 style="text-align:center;font-family:Arial;color:#DC143C;">🔒 LoveConnect</h1><p style="text-align:center;">Enter the secret code in the URL: <code>?code=yourcode</code></p><p style="text-align:center;">Share the full URL with your partner to let them in! 💕</p>');
   }
   next();
+});
+
+// Explicitly serve main page first (ensures index.html is always served)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
