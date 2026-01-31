@@ -86,7 +86,7 @@ socket.on('resetAll', () => {
   document.getElementById('photo-grid').innerHTML = '';
   document.getElementById('mood-list').innerHTML = '';
   document.getElementById('quiz-content').innerHTML = '';
-  document.getElementById('quiz-score').textContent = 'Your Score: 0 | Partner: 0';
+  document.getElementById('quiz-score').textContent = 'Scores: You 0 | Partner 0';
   document.getElementById('userPoints').textContent = '0';
   document.getElementById('partnerPoints').textContent = '0';
   document.getElementById('countdown-display').textContent = '';
@@ -109,21 +109,14 @@ socket.on('resetAll', () => {
   }
 });
 
-// Tab switching with smooth transitions
+// Tab switching
 function showTab(tab) {
-  document.querySelectorAll('.tab-content').forEach(el => {
-    el.classList.remove('show');
-    el.style.display = 'none';
-  });
-  const activeTab = document.getElementById(tab + '-tab');
-  if (activeTab) {
-    activeTab.style.display = 'block';
-    activeTab.offsetHeight; // Trigger reflow for animation
-    activeTab.classList.add('show');
-  }
-  document.querySelectorAll('.tab-button').forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('data-tab') === tab);
-  });
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const tabEl = document.getElementById(tab + '-tab');
+  const btnEl = document.querySelector('.nav-btn[data-tab="' + tab + '"]');
+  if (tabEl) tabEl.classList.add('active');
+  if (btnEl) btnEl.classList.add('active');
 }
 
 // Chat
@@ -259,7 +252,7 @@ socket.on('updateQuiz', (data) => {
 });
 
 function updateQuizUI(scores, quiz) {
-  document.getElementById('quiz-score').textContent = `Your Score: ${scores.user1 || 0} | Partner: ${scores.user2 || 0}`;
+  document.getElementById('quiz-score').textContent = `Scores: You ${scores.user1 || 0} | Partner ${scores.user2 || 0}`;
   const content = document.getElementById('quiz-content');
   if (quiz && quiz.questions && quiz.questions.length) {
     content.innerHTML = `<p><strong>${quiz.name}</strong>: ${quiz.questions[0].q}</p>

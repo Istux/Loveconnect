@@ -3,108 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LoveConnect - Istiyak ❤️ Mohsina</title>
+  <title>Our Love Story</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 </head>
 <body>
   <header>
-    <h1>💖 LoveConnect 💖</h1>
+    <div class="logo">💖</div>
+    <nav class="nav-tabs">
+      <button class="nav-btn active" data-tab="chat" onclick="showTab('chat')">Chat</button>
+      <button class="nav-btn" data-tab="drawing" onclick="showTab('drawing')">Drawing</button>
+      <button class="nav-btn" data-tab="gallery" onclick="showTab('gallery')">Gallery</button>
+      <button class="nav-btn" data-tab="quiz" onclick="showTab('quiz')">Quiz</button>
+      <button class="nav-btn" data-tab="mood" onclick="showTab('mood')">Moods</button>
+      <button class="nav-btn" data-tab="timer" onclick="showTab('timer')">Timer</button>
+      <button class="nav-btn" data-tab="music" onclick="showTab('music')">Music</button>
+    </nav>
     <p class="dedication"><strong>Istiyak ❤️ Mohsina</strong></p>
-    <p>Our Magical World of Love</p>
-    <div id="points">Love Points: You: <span id="userPoints">0</span> | Partner: <span id="partnerPoints">0</span></div>
-    <button id="reset-btn" onclick="resetEverything()">Reset Everything 🗑️</button>
+    <div id="points" class="points">Love Points: You <span id="userPoints">0</span> | Partner <span id="partnerPoints">0</span></div>
+    <button id="reset-btn" class="reset-btn" onclick="resetEverything()">Reset All</button>
   </header>
   
-  <!-- Persistent active users display (bottom-right) -->
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Together Forever</h2>
+      <p>Our shared moments, one click at a time.</p>
+    </div>
+  </section>
+  
   <div id="notification" class="notification">
-    <span id="notif-text">💖 Active Users: 1</span>
+    <span id="notif-text">Active: 1</span>
   </div>
   
-  <!-- Join/Leave popup notifications -->
-  <div id="notification-container"></div>
-  
-  <div class="container">
-    <div class="tabs">
-      <button class="tab-button active" data-tab="chat" onclick="showTab('chat')">Chat</button>
-      <button class="tab-button" data-tab="drawing" onclick="showTab('drawing')">Drawing Pad</button>
-      <button class="tab-button" data-tab="gallery" onclick="showTab('gallery')">Photo Gallery</button>
-      <button class="tab-button" data-tab="quiz" onclick="showTab('quiz')">Love Quiz</button>
-      <button class="tab-button" data-tab="mood" onclick="showTab('mood')">Mood Tracker</button>
-      <button class="tab-button" data-tab="timer" onclick="showTab('timer')">Countdown</button>
-      <button class="tab-button" data-tab="music" onclick="showTab('music')">Music</button>
-    </div>
-    
-    <div id="chat-tab" class="tab-content show">
-      <div class="chat-section">
+  <main class="container">
+    <div id="chat-tab" class="tab-content active">
+      <div class="card">
+        <h3>Chat</h3>
         <div id="chat-messages"></div>
-        <input type="text" id="message-input" placeholder="Type a message... 💕">
-        <button onclick="sendMessage()">Send</button>
-        <button onclick="sendGift('heart')">Send Heart Gift 💖</button>
+        <input type="text" id="message-input" placeholder="Share your thoughts...">
+        <button class="btn" onclick="sendMessage()">Send</button>
+        <button class="btn gift" onclick="sendGift('heart')">Send 💖</button>
       </div>
     </div>
     
-    <div id="drawing-tab" class="tab-content" style="display:none;">
-      <div class="drawing-section">
+    <div id="drawing-tab" class="tab-content">
+      <div class="card">
+        <h3>Drawing Pad</h3>
         <div class="tools">
-          <button onclick="addText()">Add Text</button>
-          <button onclick="addShape('heart')">Add Heart</button>
-          <button onclick="setBrushSize(5)">Small Brush</button>
-          <button onclick="setBrushSize(20)">Large Brush</button>
-          <button onclick="saveCanvas()">Save Drawing</button>
-          <button onclick="clearCanvas()">Clear</button>
+          <button class="btn" onclick="addText()">Add Text</button>
+          <button class="btn" onclick="addShape('heart')">Add 💖</button>
+          <button class="btn" onclick="setBrushSize(5)">Small Brush</button>
+          <button class="btn" onclick="setBrushSize(20)">Large Brush</button>
+          <button class="btn" onclick="saveCanvas()">Save</button>
+          <button class="btn" onclick="clearCanvas()">Clear</button>
         </div>
         <canvas id="canvas" width="600" height="400"></canvas>
       </div>
     </div>
     
-    <div id="gallery-tab" class="tab-content" style="display:none;">
-      <input type="file" id="photo-upload" accept="image/*">
-      <button onclick="uploadPhoto()">Upload Photo</button>
-      <div id="photo-grid"></div>
-    </div>
-    
-    <div id="quiz-tab" class="tab-content" style="display:none;">
-      <div id="quiz-content"></div>
-      <div id="quiz-score">Your Score: 0 | Partner: 0</div>
-    </div>
-    
-    <div id="mood-tab" class="tab-content" style="display:none;">
-      <div class="mood-buttons">
-        <button onclick="shareMood('😊 Happy')">😊 Happy</button>
-        <button onclick="shareMood('😍 Excited')">😍 Excited</button>
-        <button onclick="shareMood('😢 Sad')">😢 Sad</button>
-        <button onclick="shareMood('😴 Tired')">😴 Tired</button>
-        <button onclick="shareMood('😡 Frustrated')">😡 Frustrated</button>
-        <button onclick="shareMood('🤔 Thoughtful')">🤔 Thoughtful</button>
-        <button onclick="shareMood('😘 Loving')">😘 Loving</button>
-        <button onclick="shareMood('🎉 Celebratory')">🎉 Celebratory</button>
-        <button onclick="shareMood('😔 Lonely')">😔 Lonely</button>
-        <button onclick="shareMood('🌟 Hopeful')">🌟 Hopeful</button>
+    <div id="gallery-tab" class="tab-content">
+      <div class="card">
+        <h3>Photo Gallery</h3>
+        <input type="file" id="photo-upload" accept="image/*">
+        <button class="btn" onclick="uploadPhoto()">Upload</button>
+        <div id="photo-grid"></div>
       </div>
-      <div id="mood-list"></div>
     </div>
     
-    <div id="timer-tab" class="tab-content" style="display:none;">
-      <input type="text" id="event-name" placeholder="Event Name">
-      <input type="date" id="event-date">
-      <button onclick="setCountdown()">Set Countdown</button>
-      <div id="countdown-display"></div>
+    <div id="quiz-tab" class="tab-content">
+      <div class="card">
+        <h3>Love Quiz</h3>
+        <div id="quiz-content"></div>
+        <div id="quiz-score">Scores: You 0 | Partner 0</div>
+      </div>
     </div>
     
-    <div id="music-tab" class="tab-content" style="display:none;">
-      <div class="music-player">
-        <p class="music-title">💖 <span id="song-name">Love Yourself</span> - Justin Bieber</p>
-        <iframe id="music-iframe" width="320" height="180" src="https://www.youtube.com/embed/MJ8AkW7Q4GY?autoplay=0&mute=0&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <div class="music-controls">
-          <button onclick="nextSong()">Next Song ▶️</button>
-          <button onclick="playMusic()">Play ▶️</button>
-          <button onclick="pauseMusic()">Pause ⏸️</button>
-          <button id="mute-btn" onclick="toggleMute()">Unmute 🔊</button>
+    <div id="mood-tab" class="tab-content">
+      <div class="card">
+        <h3>Mood Tracker</h3>
+        <div class="mood-buttons">
+          <button class="btn" onclick="shareMood('😊 Happy')">😊 Happy</button>
+          <button class="btn" onclick="shareMood('😍 Excited')">😍 Excited</button>
+          <button class="btn" onclick="shareMood('😢 Sad')">😢 Sad</button>
+          <button class="btn" onclick="shareMood('😴 Tired')">😴 Tired</button>
+          <button class="btn" onclick="shareMood('😡 Frustrated')">😡 Frustrated</button>
+          <button class="btn" onclick="shareMood('🤔 Thoughtful')">🤔 Thoughtful</button>
+          <button class="btn" onclick="shareMood('😘 Loving')">😘 Loving</button>
+          <button class="btn" onclick="shareMood('🎉 Celebratory')">🎉 Celebratory</button>
+          <button class="btn" onclick="shareMood('😔 Lonely')">😔 Lonely</button>
+          <button class="btn" onclick="shareMood('🌟 Hopeful')">🌟 Hopeful</button>
+        </div>
+        <div id="mood-list"></div>
+      </div>
+    </div>
+    
+    <div id="timer-tab" class="tab-content">
+      <div class="card">
+        <h3>Countdown</h3>
+        <input type="text" id="event-name" placeholder="Event">
+        <input type="date" id="event-date">
+        <button class="btn" onclick="setCountdown()">Set</button>
+        <div id="countdown-display"></div>
+      </div>
+    </div>
+    
+    <div id="music-tab" class="tab-content">
+      <div class="card">
+        <h3>Music</h3>
+        <div class="music-player">
+          <p class="music-title"><span id="song-name">Love Yourself</span> — Justin Bieber</p>
+          <iframe id="music-iframe" width="320" height="180" src="https://www.youtube.com/embed/MJ8AkW7Q4GY?autoplay=0&mute=0&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <div class="music-controls">
+            <button class="btn" onclick="nextSong()">Next Song</button>
+            <button class="btn" onclick="playMusic()">Play</button>
+            <button class="btn" onclick="pauseMusic()">Pause</button>
+            <button id="mute-btn" class="btn" onclick="toggleMute()">Unmute</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
+  
+  <footer>
+    <p>Made with 💖 for eternal love.</p>
+  </footer>
   
   <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>
