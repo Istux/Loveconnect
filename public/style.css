@@ -22,9 +22,35 @@ h1 {
   text-shadow: 2px 2px #FFF;
 }
 
+.dedication {
+  font-size: 1.5em;
+  color: #FF1493;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
 #points {
   font-size: 1.2em;
   color: #DC143C;
+}
+
+#reset-btn {
+  background: #FF0000;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#reset-btn:hover {
+  background: #CC0000;
 }
 
 .container {
@@ -76,7 +102,7 @@ h1 {
   margin-top: 10px;
 }
 
-.chat-section button, .notes-section button {
+.chat-section button {
   background: #28A745;
   color: white;
   border: none;
@@ -84,6 +110,12 @@ h1 {
   border-radius: 10px;
   cursor: pointer;
   margin: 5px;
+}
+
+#chat-messages {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 10px;
 }
 
 .message, .mood-item {
@@ -107,6 +139,10 @@ h1 {
   cursor: pointer;
 }
 
+.canvas-container {
+  margin: 15px auto 0;
+}
+
 #photo-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -122,26 +158,58 @@ h1 {
   border: 2px solid #FFB6C1;
 }
 
+#quiz-content {
+  margin-bottom: 15px;
+}
+
+#quiz-content button {
+  background: #28A745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+#quiz-score {
+  font-size: 1.2em;
+  color: #DC143C;
+  font-weight: bold;
+}
+
+.mood-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.mood-buttons button {
+  background: #FFC107;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
 #countdown-display {
   margin-top: 15px;
   font-size: 1.5em;
   color: #DC143C;
 }
 
-.music-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 10px 15px;
-  border-radius: 20px;
-  border: none;
-  background: #FF69B4;
-  color: white;
-  cursor: pointer;
+#music-tab select, #music-tab button, #music-tab input {
+  margin: 10px 5px;
 }
 
-.canvas-container {
-  margin: 0 auto;
+#music-tab button {
+  background: #28A745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 /* Animations */
@@ -153,11 +221,11 @@ h1 {
 
 @keyframes confetti {
   0% { transform: translateY(0px) rotate(0deg); }
-  100% { transform: translateY(-100px) rotate(360deg); }
+  100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
 }
 
 .confetti {
-  animation: confetti 2s ease-in-out;
+  animation: confetti 2s ease-in-out forwards;
 }
 
 .gift-animation {

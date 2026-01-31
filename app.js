@@ -9,7 +9,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-// Ensure uploads folder exists (skip on Heroku if needed)
+// Ensure uploads folder exists
 try {
   if (!fs.existsSync('uploads')) fs.mkdirSync('uploads');
 } catch (e) { /* ignore */ }
@@ -17,7 +17,7 @@ try {
 const upload = multer({ dest: 'uploads/' });
 app.use('/uploads', express.static('uploads'));
 
-// Optional: shared code for privacy (set SHARED_CODE env var, e.g. heroku config:set SHARED_CODE=love2023)
+// Optional: shared code for privacy
 const SHARED_CODE = process.env.SHARED_CODE;
 app.use((req, res, next) => {
   if (SHARED_CODE && req.path === '/' && req.query.code !== SHARED_CODE) {
@@ -26,7 +26,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Explicitly serve main page first (ensures index.html is always served)
+// Explicitly serve main page first
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -41,8 +41,15 @@ let quizScores = { user1: 0, user2: 0 };
 let lovePoints = { user1: 0, user2: 0 };
 let countdown = { event: 'Next Date', date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] };
 let drawingData = null;
+let currentQuizIndex = 0;
 
-// Photo upload endpoint
+const quizzes = [
+  { name: 'Fun Facts', questions: [{ q: 'Favorite color?', a: 'Pink', points: 10 }] },
+  { name: 'Dream Vacation', questions: [{ q: 'Dream place?', a: 'Paris', points: 15 }] },
+  { name: 'Favorite Memories', questions: [{ q: 'Best memory?', a: 'First Date', points: 20 }] }
+];
+
+// Photo upload
 app.post('/upload', upload.single('photo'), (req, res) => {
   if (req.file) {
     const photo = { url: `/uploads/${req.file.filename}`, time: new Date().toLocaleString() };
@@ -65,7 +72,21 @@ io.on('connection', (socket) => {
     quizScores,
     lovePoints,
     countdown,
-    drawingData
+    drawingData,
+    currentQuiz: quizzes[currentQuizIndex]
+  });
+
+  // Reset everything
+  socket.on('resetAll', () => {
+    chatMessages = [];
+    photos = [];
+    moods = [];
+    quizScores = { user1: 0, user2: 0 };
+    lovePoints = { user1: 0, user2: 0 };
+    countdown = { event: 'Next Date', date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] };
+    drawingData = null;
+    currentQuizIndex = 0;
+    io.emit('resetAll');
   });
 
   // Chat
@@ -84,9 +105,10 @@ io.on('connection', (socket) => {
   });
 
   // Quiz
-  socket.on('submitQuiz', (score) => {
-    quizScores.user1 += score;
-    io.emit('updateQuiz', quizScores);
+  socket.on('submitQuiz', (data) => {
+    quizScores.user1 += data.points;
+    currentQuizIndex = (currentQuizIndex + 1) % quizzes.length;
+    io.emit('updateQuiz', { scores: quizScores, quiz: quizzes[currentQuizIndex] });
   });
 
   // Gifts
@@ -100,7 +122,7 @@ io.on('connection', (socket) => {
     io.emit('updateCountdown', countdown);
   });
 
-  // Drawing (Fabric.js)
+  // Drawing
   socket.on('drawUpdate', (data) => {
     drawingData = data;
     socket.broadcast.emit('drawUpdate', data);

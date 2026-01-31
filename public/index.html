@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LoveConnect</title>
+  <title>LoveConnect - Istiyak ❤️ Mohsina</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 </head>
 <body>
   <header>
     <h1>💖 LoveConnect 💖</h1>
+    <p class="dedication"><strong>Istiyak ❤️ Mohsina</strong></p>
     <p>Our Magical World of Love</p>
     <div id="points">Love Points: You: <span id="userPoints">0</span> | Partner: <span id="partnerPoints">0</span></div>
+    <button id="reset-btn" onclick="resetEverything()">Reset Everything 🗑️</button>
   </header>
   
   <div class="container">
@@ -22,6 +24,7 @@
       <button class="tab-button" data-tab="quiz" onclick="showTab('quiz')">Love Quiz</button>
       <button class="tab-button" data-tab="mood" onclick="showTab('mood')">Mood Tracker</button>
       <button class="tab-button" data-tab="timer" onclick="showTab('timer')">Countdown</button>
+      <button class="tab-button" data-tab="music" onclick="showTab('music')">Music</button>
     </div>
     
     <div id="chat-tab" class="tab-content">
@@ -54,15 +57,23 @@
     </div>
     
     <div id="quiz-tab" class="tab-content" style="display:none;">
-      <p>Question: What's my favorite color?</p>
-      <button onclick="answerQuiz('Pink')">Pink</button>
-      <button onclick="answerQuiz('Blue')">Blue</button>
+      <div id="quiz-content"></div>
       <div id="quiz-score">Your Score: 0 | Partner: 0</div>
     </div>
     
     <div id="mood-tab" class="tab-content" style="display:none;">
-      <button onclick="shareMood('😊')">Happy 😊</button>
-      <button onclick="shareMood('😢')">Sad 😢</button>
+      <div class="mood-buttons">
+        <button onclick="shareMood('😊 Happy')">😊 Happy</button>
+        <button onclick="shareMood('😍 Excited')">😍 Excited</button>
+        <button onclick="shareMood('😢 Sad')">😢 Sad</button>
+        <button onclick="shareMood('😴 Tired')">😴 Tired</button>
+        <button onclick="shareMood('😡 Frustrated')">😡 Frustrated</button>
+        <button onclick="shareMood('🤔 Thoughtful')">🤔 Thoughtful</button>
+        <button onclick="shareMood('😘 Loving')">😘 Loving</button>
+        <button onclick="shareMood('🎉 Celebratory')">🎉 Celebratory</button>
+        <button onclick="shareMood('😔 Lonely')">😔 Lonely</button>
+        <button onclick="shareMood('🌟 Hopeful')">🌟 Hopeful</button>
+      </div>
       <div id="mood-list"></div>
     </div>
     
@@ -72,12 +83,25 @@
       <button onclick="setCountdown()">Set Countdown</button>
       <div id="countdown-display"></div>
     </div>
+    
+    <div id="music-tab" class="tab-content" style="display:none;">
+      <p>Select a romantic track:</p>
+      <select id="music-select">
+        <option value="track1">Romantic Piano</option>
+        <option value="track2">Love Song</option>
+        <option value="track3">Soft Melody</option>
+        <option value="track4">Upbeat Romance</option>
+        <option value="track5">Whispering Winds</option>
+      </select>
+      <button onclick="playMusic()">Play ▶️</button>
+      <button onclick="pauseMusic()">Pause ⏸️</button>
+      <label for="volume">Volume:</label>
+      <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5" onchange="setVolume()">
+      <audio id="bg-music" loop preload="auto">
+        <source id="music-source" src="" type="audio/wav">
+      </audio>
+    </div>
   </div>
-  
-  <audio id="bg-music" loop>
-    <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav">
-  </audio>
-  <button class="music-btn" onclick="toggleMusic()">Toggle Music 🎵</button>
   
   <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>
