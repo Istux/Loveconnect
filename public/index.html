@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoveConnect</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>💖 LoveConnect 💖</h1>
+    <p>Our Magical World of Love</p>
+    <div id="points">Love Points: You: <span id="userPoints">0</span> | Partner: <span id="partnerPoints">0</span></div>
+  </header>
+  
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-button active" data-tab="chat" onclick="showTab('chat')">Chat</button>
+      <button class="tab-button" data-tab="drawing" onclick="showTab('drawing')">Drawing Pad</button>
+      <button class="tab-button" data-tab="gallery" onclick="showTab('gallery')">Photo Gallery</button>
+      <button class="tab-button" data-tab="quiz" onclick="showTab('quiz')">Love Quiz</button>
+      <button class="tab-button" data-tab="mood" onclick="showTab('mood')">Mood Tracker</button>
+      <button class="tab-button" data-tab="timer" onclick="showTab('timer')">Countdown</button>
+    </div>
+    
+    <div id="chat-tab" class="tab-content">
+      <div class="chat-section">
+        <div id="chat-messages"></div>
+        <input type="text" id="message-input" placeholder="Type a message... 💕">
+        <button onclick="sendMessage()">Send</button>
+        <button onclick="sendGift('heart')">Send Heart Gift 💖</button>
+      </div>
+    </div>
+    
+    <div id="drawing-tab" class="tab-content" style="display:none;">
+      <div class="drawing-section">
+        <div class="tools">
+          <button onclick="addText()">Add Text</button>
+          <button onclick="addShape('heart')">Add Heart</button>
+          <button onclick="setBrushSize(5)">Small Brush</button>
+          <button onclick="setBrushSize(20)">Large Brush</button>
+          <button onclick="saveCanvas()">Save Drawing</button>
+          <button onclick="clearCanvas()">Clear</button>
+        </div>
+        <canvas id="canvas" width="600" height="400"></canvas>
+      </div>
+    </div>
+    
+    <div id="gallery-tab" class="tab-content" style="display:none;">
+      <input type="file" id="photo-upload" accept="image/*">
+      <button onclick="uploadPhoto()">Upload Photo</button>
+      <div id="photo-grid"></div>
+    </div>
+    
+    <div id="quiz-tab" class="tab-content" style="display:none;">
+      <p>Question: What's my favorite color?</p>
+      <button onclick="answerQuiz('Pink')">Pink</button>
+      <button onclick="answerQuiz('Blue')">Blue</button>
+      <div id="quiz-score">Your Score: 0 | Partner: 0</div>
+    </div>
+    
+    <div id="mood-tab" class="tab-content" style="display:none;">
+      <button onclick="shareMood('😊')">Happy 😊</button>
+      <button onclick="shareMood('😢')">Sad 😢</button>
+      <div id="mood-list"></div>
+    </div>
+    
+    <div id="timer-tab" class="tab-content" style="display:none;">
+      <input type="text" id="event-name" placeholder="Event Name">
+      <input type="date" id="event-date">
+      <button onclick="setCountdown()">Set Countdown</button>
+      <div id="countdown-display"></div>
+    </div>
+  </div>
+  
+  <audio id="bg-music" loop>
+    <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav">
+  </audio>
+  <button class="music-btn" onclick="toggleMusic()">Toggle Music 🎵</button>
+  
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
