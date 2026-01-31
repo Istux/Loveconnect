@@ -67,7 +67,7 @@ app.post('/upload', upload.single('photo'), (req, res) => {
 io.on('connection', (socket) => {
   activeUsers++;
   // Notify others when someone joins (joiner doesn't see this)
-  socket.broadcast.emit('userJoined', { name: 'Mohsina', active: activeUsers });
+  socket.broadcast.emit('userJoined', { name: 'Partner', active: activeUsers });
 
   console.log('A user connected, active:', activeUsers);
 
@@ -138,7 +138,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     activeUsers = Math.max(0, activeUsers - 1);
-    io.emit('userLeft', { name: 'Mohsina', active: activeUsers });
+    io.emit('userLeft', { name: 'Partner', active: activeUsers });
     console.log('A user disconnected, active:', activeUsers);
   });
 });

@@ -11,6 +11,8 @@ const musicTracks = {
   track5: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
 };
 
+let currentActiveCount = 1;
+
 // Fabric.js canvas setup
 canvas.freeDrawingBrush.width = currentBrushSize;
 canvas.freeDrawingBrush.color = '#FFB6C1';
@@ -24,7 +26,7 @@ socket.on('loadData', (data) => {
   updateQuizUI(data.quizScores || { user1: 0, user2: 0 }, data.currentQuiz);
   updatePoints(data.lovePoints || { user1: 0, user2: 0 });
   updateCountdownUI(data.countdown || {});
-  updateActiveCount(data.active !== undefined ? data.active : 1);
+  updateActiveUsers(data.active !== undefined ? data.active : 1);
   if (data.drawingData && typeof data.drawingData === 'object') {
     canvas.loadFromJSON(data.drawingData, () => canvas.renderAll());
   }
@@ -32,29 +34,31 @@ socket.on('loadData', (data) => {
 
 // Join/Leave notifications
 socket.on('userJoined', (data) => {
-  updateActiveCount(data.active);
-  showNotification(`💖 ${data.name} Joined!`, `Active: ${data.active}`);
+  updateActiveUsers(data.active);
+  showNotification(`💖 ${data.name} Joined! Active: ${data.active}`);
 });
 
 socket.on('userLeft', (data) => {
-  updateActiveCount(data.active);
-  showNotification(`😢 ${data.name} Left`, `Active: ${data.active}`);
+  updateActiveUsers(data.active);
+  showNotification(`😢 ${data.name} Left. Active: ${data.active}`);
 });
 
-function updateActiveCount(count) {
-  const el = document.getElementById('activeCount');
-  if (el) el.textContent = count;
+function updateActiveUsers(count) {
+  currentActiveCount = count;
+  const el = document.getElementById('notif-text');
+  const box = document.getElementById('notification');
+  if (el) el.textContent = `💖 Active Users: ${count}`;
+  if (box) box.classList.add('show');
 }
 
-function showNotification(title, subtitle) {
-  const container = document.getElementById('notification-container');
-  const notify = document.createElement('div');
-  notify.className = 'notification-box';
-  notify.innerHTML = `<span class="notify-icon">💖</span><strong>${title}</strong><br><small>${subtitle}</small>`;
-  container.appendChild(notify);
+function showNotification(text) {
+  const notif = document.getElementById('notification');
+  const textEl = document.getElementById('notif-text');
+  if (textEl) textEl.textContent = text;
+  if (notif) notif.classList.add('show');
   setTimeout(() => {
-    notify.classList.add('fade-out');
-    setTimeout(() => notify.remove(), 500);
+    if (notif) notif.classList.remove('show');
+    setTimeout(() => updateActiveUsers(currentActiveCount), 500);
   }, 5000);
 }
 

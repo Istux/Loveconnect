@@ -13,11 +13,15 @@
     <p class="dedication"><strong>Istiyak ❤️ Mohsina</strong></p>
     <p>Our Magical World of Love</p>
     <div id="points">Love Points: You: <span id="userPoints">0</span> | Partner: <span id="partnerPoints">0</span></div>
-    <div id="active-users">💖 Active: <span id="activeCount">1</span></div>
     <button id="reset-btn" onclick="resetEverything()">Reset Everything 🗑️</button>
   </header>
   
-  <!-- Join/Leave notifications (bottom-right) -->
+  <!-- Persistent active users display (bottom-right) -->
+  <div id="notification" class="notification">
+    <span id="notif-text">💖 Active Users: 1</span>
+  </div>
+  
+  <!-- Join/Leave popup notifications -->
   <div id="notification-container"></div>
   
   <div class="container">

@@ -53,16 +53,31 @@ h1 {
   background: #CC0000;
 }
 
-#active-users {
-  font-size: 1em;
-  color: #FF1493;
-  margin-top: 5px;
-}
-
-/* Join/Leave notification (bottom-right) */
-#notification-container {
+/* Persistent active users display (bottom-right) */
+.notification {
   position: fixed;
   bottom: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #FF69B4;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+  color: #DC143C;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.notification.show {
+  opacity: 1;
+}
+
+/* Join/Leave popup notifications */
+#notification-container {
+  position: fixed;
+  bottom: 70px;
   right: 20px;
   z-index: 9998;
   display: flex;
