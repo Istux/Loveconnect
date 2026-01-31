@@ -9,6 +9,9 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+// Track active users for join/leave notifications
+let activeUsers = 0;
+
 // Ensure uploads folder exists
 try {
   if (!fs.existsSync('uploads')) fs.mkdirSync('uploads');
@@ -62,9 +65,13 @@ app.post('/upload', upload.single('photo'), (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('A user connected');
+  activeUsers++;
+  // Notify others when someone joins (joiner doesn't see this)
+  socket.broadcast.emit('userJoined', { name: 'Mohsina', active: activeUsers });
 
-  // Send existing data
+  console.log('A user connected, active:', activeUsers);
+
+  // Send existing data including active count
   socket.emit('loadData', {
     chatMessages,
     photos,
@@ -73,7 +80,8 @@ io.on('connection', (socket) => {
     lovePoints,
     countdown,
     drawingData,
-    currentQuiz: quizzes[currentQuizIndex]
+    currentQuiz: quizzes[currentQuizIndex],
+    active: activeUsers
   });
 
   // Reset everything
@@ -129,7 +137,9 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('A user disconnected');
+    activeUsers = Math.max(0, activeUsers - 1);
+    io.emit('userLeft', { name: 'Mohsina', active: activeUsers });
+    console.log('A user disconnected, active:', activeUsers);
   });
 });
 

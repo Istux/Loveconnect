@@ -53,6 +53,53 @@ h1 {
   background: #CC0000;
 }
 
+#active-users {
+  font-size: 1em;
+  color: #FF1493;
+  margin-top: 5px;
+}
+
+/* Join/Leave notification (bottom-right) */
+#notification-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.notification-box {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #FF69B4;
+  border-radius: 15px;
+  padding: 15px 20px;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+  animation: notify-fade-in 0.3s ease-out;
+  max-width: 220px;
+}
+
+.notification-box.fade-out {
+  animation: notify-fade-out 0.5s ease-out forwards;
+}
+
+@keyframes notify-fade-in {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes notify-fade-out {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(50px); }
+}
+
+.notify-icon {
+  font-size: 1.2em;
+  margin-right: 5px;
+}
+
 .container {
   max-width: 800px;
   margin: 0 auto;

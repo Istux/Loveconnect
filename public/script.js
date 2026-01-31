@@ -24,10 +24,39 @@ socket.on('loadData', (data) => {
   updateQuizUI(data.quizScores || { user1: 0, user2: 0 }, data.currentQuiz);
   updatePoints(data.lovePoints || { user1: 0, user2: 0 });
   updateCountdownUI(data.countdown || {});
+  updateActiveCount(data.active !== undefined ? data.active : 1);
   if (data.drawingData && typeof data.drawingData === 'object') {
     canvas.loadFromJSON(data.drawingData, () => canvas.renderAll());
   }
 });
+
+// Join/Leave notifications
+socket.on('userJoined', (data) => {
+  updateActiveCount(data.active);
+  showNotification(`💖 ${data.name} Joined!`, `Active: ${data.active}`);
+});
+
+socket.on('userLeft', (data) => {
+  updateActiveCount(data.active);
+  showNotification(`😢 ${data.name} Left`, `Active: ${data.active}`);
+});
+
+function updateActiveCount(count) {
+  const el = document.getElementById('activeCount');
+  if (el) el.textContent = count;
+}
+
+function showNotification(title, subtitle) {
+  const container = document.getElementById('notification-container');
+  const notify = document.createElement('div');
+  notify.className = 'notification-box';
+  notify.innerHTML = `<span class="notify-icon">💖</span><strong>${title}</strong><br><small>${subtitle}</small>`;
+  container.appendChild(notify);
+  setTimeout(() => {
+    notify.classList.add('fade-out');
+    setTimeout(() => notify.remove(), 500);
+  }, 5000);
+}
 
 // Reset everything
 function resetEverything() {
