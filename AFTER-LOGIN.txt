@@ -1,0 +1,20 @@
+========================================
+  LOVE CONNECT - RUN THESE AFTER LOGIN
+========================================
+
+1. Open terminal in: c:\Users\istiy\OneDrive\Desktop\mohstiyak
+
+2. Run these 3 commands (copy & paste):
+
+   heroku create loveconnect-mohstiyak
+
+   git push heroku master
+
+   heroku open
+
+3. Share the URL with your partner!
+
+---
+If "loveconnect-mohstiyak" is taken, use:
+   heroku create loveconnect-2024
+(or any unique name you like)
