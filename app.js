@@ -97,26 +97,29 @@ io.on('connection', (socket) => {
     io.emit('resetAll');
   });
 
-  // Chat
+  // Chat (with notification for partner)
   socket.on('sendMessage', (msg) => {
     chatMessages.push(msg);
     socket.broadcast.emit('newMessage', msg);
+    socket.broadcast.emit('notification', { type: 'message', text: 'New message from Partner!' });
     lovePoints.user1 += 5;
     lovePoints.user2 += 5;
     io.emit('updatePoints', lovePoints);
   });
 
-  // Moods
+  // Moods (with notification for partner)
   socket.on('shareMood', (mood) => {
     moods.push(mood);
     io.emit('newMood', mood);
+    socket.broadcast.emit('notification', { type: 'mood', text: `Partner shared mood: ${mood.mood}` });
   });
 
-  // Quiz
+  // Quiz (with notification for partner)
   socket.on('submitQuiz', (data) => {
     quizScores.user1 += data.points;
     currentQuizIndex = (currentQuizIndex + 1) % quizzes.length;
     io.emit('updateQuiz', { scores: quizScores, quiz: quizzes[currentQuizIndex] });
+    socket.broadcast.emit('notification', { type: 'quiz', text: 'Partner answered quiz!' });
   });
 
   // Gifts

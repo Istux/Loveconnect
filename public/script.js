@@ -2,14 +2,14 @@ const socket = io();
 let canvas = new fabric.Canvas('canvas');
 let currentBrushSize = 5;
 
-// Music tracks (replace with real URLs)
-const musicTracks = {
-  track1: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-  track2: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-  track3: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-  track4: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-  track5: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
-};
+// YouTube music playlist (official embeds)
+const musicPlaylist = [
+  { id: 'MJ8AkW7Q4GY', name: 'Love Yourself', artist: 'Justin Bieber' },
+  { id: 'Umqb9KENgmk', name: 'Tum Hi Ho', artist: 'Arijit Singh' },
+  { id: 'JGwWNGJdvx8', name: 'Shape of You', artist: 'Ed Sheeran' }
+];
+let currentSongIndex = 0;
+let isMuted = false;
 
 let currentActiveCount = 1;
 
@@ -43,6 +43,12 @@ socket.on('userLeft', (data) => {
   showNotification(`😢 ${data.name} Left. Active: ${data.active}`);
 });
 
+// Interaction notifications (message, mood, quiz)
+socket.on('notification', (data) => {
+  showNotification(`💕 ${data.text}`);
+  playChime();
+});
+
 function updateActiveUsers(count) {
   currentActiveCount = count;
   const el = document.getElementById('notif-text');
@@ -60,6 +66,12 @@ function showNotification(text) {
     if (notif) notif.classList.remove('show');
     setTimeout(() => updateActiveUsers(currentActiveCount), 500);
   }, 5000);
+}
+
+function playChime() {
+  const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869-pop-alert-2869.wav');
+  audio.volume = 0.3;
+  audio.play().catch(() => {});
 }
 
 // Reset everything
@@ -97,16 +109,20 @@ socket.on('resetAll', () => {
   }
 });
 
-// Tab switching
+// Tab switching with smooth transitions
 function showTab(tab) {
-  const tabs = ['chat', 'drawing', 'gallery', 'quiz', 'mood', 'timer', 'music'];
-  tabs.forEach(t => {
-    const el = document.getElementById(t + '-tab');
-    if (el) el.style.display = t === tab ? 'block' : 'none';
+  document.querySelectorAll('.tab-content').forEach(el => {
+    el.classList.remove('show');
+    el.style.display = 'none';
   });
+  const activeTab = document.getElementById(tab + '-tab');
+  if (activeTab) {
+    activeTab.style.display = 'block';
+    activeTab.offsetHeight; // Trigger reflow for animation
+    activeTab.classList.add('show');
+  }
   document.querySelectorAll('.tab-button').forEach(btn => {
-    btn.classList.toggle('active', btn.textContent.trim().toLowerCase().includes(tab) || 
-      (tab === 'timer' && btn.textContent.includes('Countdown')));
+    btn.classList.toggle('active', btn.getAttribute('data-tab') === tab);
   });
 }
 
@@ -314,20 +330,39 @@ function updatePoints(points) {
   document.getElementById('partnerPoints').textContent = points.user2 || 0;
 }
 
-// Music
+// Music (YouTube embeds)
+function loadSong(index) {
+  const song = musicPlaylist[index];
+  const iframe = document.getElementById('music-iframe');
+  const titleEl = document.getElementById('song-name');
+  if (iframe && song) {
+    iframe.src = `https://www.youtube.com/embed/${song.id}?autoplay=0&mute=${isMuted ? 1 : 0}&enablejsapi=1`;
+    if (titleEl) titleEl.textContent = `${song.name} - ${song.artist}`;
+  }
+}
+
+function nextSong() {
+  currentSongIndex = (currentSongIndex + 1) % musicPlaylist.length;
+  loadSong(currentSongIndex);
+}
+
 function playMusic() {
-  const select = document.getElementById('music-select');
-  const source = document.getElementById('music-source');
-  source.src = musicTracks[select.value];
-  const audio = document.getElementById('bg-music');
-  audio.load();
-  audio.play().catch(() => {});
+  const iframe = document.getElementById('music-iframe');
+  if (iframe && iframe.contentWindow) {
+    try { iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*'); } catch (e) {}
+  }
 }
 
 function pauseMusic() {
-  document.getElementById('bg-music').pause();
+  const iframe = document.getElementById('music-iframe');
+  if (iframe && iframe.contentWindow) {
+    try { iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } catch (e) {}
+  }
 }
 
-function setVolume() {
-  document.getElementById('bg-music').volume = document.getElementById('volume').value;
+function toggleMute() {
+  isMuted = !isMuted;
+  const btn = document.getElementById('mute-btn');
+  if (btn) btn.textContent = isMuted ? 'Unmute 🔊' : 'Mute 🔇';
+  loadSong(currentSongIndex);
 }

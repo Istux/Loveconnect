@@ -1,19 +1,25 @@
 body {
   font-family: 'Arial', sans-serif;
-  background: linear-gradient(to bottom, #FFB6C1, #E6E6FA);
+  background: linear-gradient(135deg, #FFB6C1, #E6E6FA, #ADD8E6);
   color: #333;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  transition: all 0.3s ease;
 }
 
 header {
   text-align: center;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
   margin: 20px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+header:hover {
+  transform: scale(1.02);
 }
 
 h1 {
@@ -53,25 +59,35 @@ h1 {
   background: #CC0000;
 }
 
+button {
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
 /* Persistent active users display (bottom-right) */
 .notification {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(45deg, #FFF, #FFB6C1);
   border: 2px solid #FF69B4;
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  font-size: 14px;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  font-size: 16px;
   color: #DC143C;
   z-index: 1000;
   opacity: 0;
-  transition: opacity 0.5s;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
 }
 
 .notification.show {
   opacity: 1;
+  transform: translateY(0);
 }
 
 /* Join/Leave popup notifications */
@@ -130,24 +146,37 @@ h1 {
 }
 
 .tab-button {
-  background: #FF69B4;
+  background: linear-gradient(45deg, #FF69B4, #FFC107);
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
+  padding: 12px 20px;
+  margin: 0 5px;
+  border-radius: 25px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .tab-button:hover, .tab-button.active {
-  background: #DC143C;
+  background: linear-gradient(45deg, #DC143C, #FF4500);
+  transform: translateY(-2px);
 }
 
 .tab-content {
-  background: rgba(255, 255, 255, 0.9);
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.tab-content.show {
+  animation: tabSlideIn 0.3s ease;
+}
+
+@keyframes tabSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .chat-section, .drawing-section {
@@ -261,17 +290,54 @@ h1 {
   color: #DC143C;
 }
 
-#music-tab select, #music-tab button, #music-tab input {
-  margin: 10px 5px;
+.music-player {
+  text-align: center;
+  padding: 15px;
+  transition: all 0.3s ease;
 }
 
-#music-tab button {
-  background: #28A745;
+#music-iframe, iframe {
+  transition: transform 0.3s ease;
+}
+
+#music-iframe:hover, iframe:hover {
+  transform: scale(1.03);
+}
+
+.music-title {
+  font-size: 1.2em;
+  color: #DC143C;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+#music-iframe {
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+  max-width: 100%;
+}
+
+.music-controls {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.music-controls button {
+  background: #FF69B4;
   color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 10px;
+  padding: 10px 20px;
+  border-radius: 25px;
   cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.music-controls button:hover {
+  background: #DC143C;
+  transform: scale(1.05);
 }
 
 /* Animations */
@@ -288,6 +354,11 @@ h1 {
 
 .confetti {
   animation: confetti 2s ease-in-out forwards;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
 }
 
 .gift-animation {
